@@ -1,0 +1,157 @@
+@prefix :<http://www.scmgraph.com/#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+
+:E005 a :ProcessingEquipment;
+    :requires :PlannedMaintenance;
+    :hasName :BLM002;
+    :isLocatedAt :Dublin;
+    :isPartOf :PL002;
+    :isOperatedBy :OP003;
+    :hasEvent :rotationExceeded;
+    :isPartOf :O002;
+    :isPartOf :UP002;
+    rdfs:label "E005".
+
+:BLM002 a :Name;
+    rdfs:label "BLM002".
+
+:Dublin a :Site;
+    :has :materialProcessing;
+    :has :E005;
+    rdfs:label "Dublin".
+
+:PL002 a :ProductionLine;
+    :isLocatedAt :materialProcessing;
+    :has :E005;
+    rdfs:label "PL002".
+
+:materialProcessing a :Area;
+    :isPartOf :Dublin;
+    :has :PL002;
+    rdfs:label "Material Processing".
+  
+:OP003 a :EquipmentOperator;
+    :operates :E005;
+    rdfs:label "Operator Dave".
+    
+:rotationExceeded a :FailureEvent;
+    :encounteredBy :E005;
+    :resultsIn :CorrectiveMaintenance;
+    :occuredAt :T1;
+    rdfs:label "Rotation Exceeded".
+
+:T1 a :Time;
+    rdfs:label "2024-05-23T17:00:00".
+    
+:MaintenanceTime a :Time;
+    rdfs:label "8 hours".
+
+:CorrectiveMaintenance a :EquipmentMaintenance;
+    :belongsTo :rotationExceeded;
+    :requiresTime :MaintenanceTime;
+    :requires :Validation001;
+    rdfs:label "Corrective Maintenance".
+
+
+
+:PlannedMaintenance a :EquipmentMaintenance;
+    :requiredBy :E005;
+    :requires :MaintenancePlanner1;
+    :doneBy :MaintenanceExecutor1;
+    :has :SOP1 .
+
+:MaintenanceExecutor1 a :HumanResource;
+    #:isResponsibleFor :CorrectiveMaintenance;
+    #:availableAt :MaintenanceExecutor1Schedule;
+    :used :SOP2;
+    rdfs:label "John".
+
+:MaintenancePlanner1 a :HumanResource;
+    rdfs:label "Adam".
+
+:SOP1 a :MaintenanceSOP;
+    rdfs:label "SOP-Preventive Maintenance for Blender".
+
+:SOP2 a :MaintenanceSOP;
+    rdfs:label "SOP-Emergency Procedures for Blender".
+
+:PH002 a :Phase;
+    :isPartOf :O002;
+    rdfs:label "USE".
+    
+:O002 a :Operation;
+    :isPartOf :UP002;
+    :has :E005;
+    :has :PH002;
+    rdfs:label "O002".
+
+:UP002 a :UnitProcedure;
+    :isPartOf :P001;
+    :has :O002;
+    :has :E005;
+    :hasInput :M001;
+    :hasInput :M002;
+    :hasOutput :I003;
+    rdfs:label "Blending".
+
+:P001 a :Procedure;
+    :belongsTo :B003;
+    :has :UP002;
+    rdfs:label "Tablet A Manufacturing Procedure".
+
+:B003 a :Batch;
+    :has :P001;
+    :has :R001;
+    :belongsTo :wo1;
+    :belongsTo :PR001;
+    rdfs:label "B003".
+
+:wo1 a :WorkOrder;
+    :has :B003;
+    rdfs:label "WO1".
+
+:R001 a :Recipe;
+    :belongsTo :B003;
+    :has :M001;
+    :has :M002;
+    rdfs:label "R001".
+    
+:M001 a :Material;
+    :isPartOf :R001;
+    :hasValue :q1;
+    rdfs:label "Powder Sodium Chloride".
+    
+:M002 a :Material;
+    :isPartOf :R001;
+    :hasValue :q2;
+    rdfs:label "Powder Pottasium Hydroxide".
+
+:I003 a :Material;
+    :hasValue :q3;
+    rdfs:label "Blended Powder".
+
+:q1 a :Quantity;
+    rdfs:label "200 Kg".
+
+:q2 a :Quantity;
+    rdfs:label "100 Kg".
+
+:q3 a :Quantity;
+    rdfs:label "300 Kg".
+
+:PR001 a :Product;
+    :has :B003;
+    rdfs:label "TabletA".
+
+:Validation001 a :Validation;
+    :status :ST000;
+    rdfs:label "MaintenanceValidation".
+
+:ST000 a :StatusCode;
+    rdfs:label "Not Started".
+
+:Calibration001 a :Calibration;
+    rdfs:label "Calibration" .
